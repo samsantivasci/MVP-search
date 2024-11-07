@@ -1,82 +1,133 @@
-import { LitElement, html, css } from 'lit';
-
-class SiteAnalyzer extends LitElement {
-  static properties = {
-    siteUrl: { type: String },
-    metadata: { type: Object },
-    items: { type: Array },
-    errorMessage: { type: String },
-  };
-
+import { LitElement, html, css } from "lit";
+import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
+import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
+import "./MVP-item";
+ 
+/**
+* `mvp-search`
+*
+* @demo index.html
+* @element mvp-search
+*/
+export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
+  static get tag() {
+    return "mvp-search";
+  }
+ 
   constructor() {
     super();
-    this.siteUrl = '';
-    this.metadata = null;
     this.items = [];
-    this.errorMessage = '';
+    this.title = "";
+    this.value = "";
+    this.overview = {};
   }
-
-  static styles = css`
-    .container { max-width: 800px; margin: auto; padding: 20px; }
-    .overview, .cards { margin: 20px 0; }
-    .card { border: 1px solid #ddd; padding: 10px; margin: 10px; cursor: pointer; }
-    .card img { max-width: 100%; height: auto; }
-    button { margin-top: 10px; }
-  `;
-
-  async fetchData() {
-    if (!this.siteUrl) return (this.errorMessage = 'Please enter a URL');
-    const url = this.siteUrl.endsWith('site.json') ? this.siteUrl : `${this.siteUrl}/site.json`;
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Invalid URL or file not found');
-      const data = await response.json();
-      if (!data.items || !data.metadata) throw new Error('Invalid JSON schema');
-
-      this.metadata = data.metadata;
-      this.items = data.items;
-      this.errorMessage = '';
-    } catch (error) {
-      this.errorMessage = `Error: ${error.message}`;
-      this.metadata = null;
+ 
+  // Lit reactive properties
+  static get properties() {
+    return {
+      ...super.properties,
+      title: { type: String },
+      value: { type: String },
+      items: { type: Array },
+      overview: { type: Object },
+    };
+  }
+ 
+  // Lit scoped styles
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        :host {
+          display: block;
+          color: var(--ddd-theme-primary);
+          background-color: var(--ddd-theme-accent);
+          font-family: var(--ddd-font-navigation);
+        }
+        .wrapper {
+          margin: var(--ddd-spacing-2);
+          padding: var(--ddd-spacing-4);
+        }
+        h3 span {
+          font-size: var(--mvp-search-label-font-size, var(--ddd-font-size-s));
+        }
+      `,
+    ];
+  }
+ 
+  // life cycle will run when anything defined in `properties` is modified
+  updated(changedProperties) {
+    // see if value changes from user input and is not empty
+    if (changedProperties.has("value") && this.value) {
+      this.updateResults(this.value);
+    } else if (changedProperties.has("value") && !this.value) {
       this.items = [];
     }
+    // @debugging purposes only
+    if (changedProperties.has("items") && this.items.length > 0) {
+      console.log(this.items);
+    }
   }
-
+ 
+  updateResults() {
+    this.value = this.shadowRoot.querySelector("#site-url").value;
+    this.loading = true;
+    console.log(this.value);
+    fetch(`${this.value}`)
+      .then((d) => (d.ok ? d.json() : {}))
+      .then((data) => {
+        if (data) {
+          this.items = data.items;
+          this.loading = false;
+        } else {
+          this.items = [];
+        }
+      });
+  }
+ 
+  // Lit render the HTML
   render() {
     return html`
       <div class="container">
         <h1>Site Analyzer</h1>
-        <input type="text" .value=${this.siteUrl} @input=${e => (this.siteUrl = e.target.value)} placeholder="https://hax.theweb.org/site.json" />
-        <button @click=${this.fetchData}>Analyze</button>
-        ${this.errorMessage ? html`<p style="color: red;">${this.errorMessage}</p>` : ''}
-
-        ${this.metadata ? html`
-          <div class="overview">
-            <h2>${this.metadata.name || 'N/A'}</h2>
-            <p><strong>Description:</strong> ${this.metadata.description || 'N/A'}</p>
-            <p><strong>Created:</strong> ${this.metadata.created || 'N/A'}</p>
-            <p><strong>Last Updated:</strong> ${this.metadata.lastUpdated || 'N/A'}</p>
-            ${this.metadata.logo ? html`<img src="${this.metadata.logo}" alt="Site Logo" style="max-width: 100px;">` : ''}
-          </div>
-        ` : ''}
-
-        <div class="cards">
+        <div>
+          <label for="site-url">HAX Site URL:</label>
+          <input
+            type="text"
+            id="site-url"
+            placeholder="https://hax.theweb.org/site.json"
+          />
+          <button @click="${this.updateResults}">Analyze</button>
+        </div>
+ 
+        <div id="overview" class="overview"></div>
+ 
+        <div id="cards" class="cards">
           ${this.items.map(
-            item => html`
-              <div class="card" @click=${() => window.open(item.link, '_blank')}>
-                ${item.image ? html`<img src="${item.image}" alt="Page Image">` : ''}
-                <h3>${item.title || 'Untitled'}</h3>
-                <p><strong>Last Updated:</strong> ${item.lastUpdated || 'N/A'}</p>
-                <p>${item.description || 'No description available'}</p>
-              </div>
+            (item, index) => html`
+              <mvp-item
+                title=${item.title}
+                lastUpdated=${item.metadata.updated}
+                description=${item.description}
+                image=${item.metadata.images[0]}
+                slug=${item.slug}
+                path=${item.location}
+                addtional=${item.metadata.published}
+              ></mvp-item>
             `
           )}
         </div>
       </div>
     `;
   }
+ 
+  /**
+   * haxProperties integration via file reference
+   */
+  static get haxProperties() {
+    return new URL(`./lib/${this.tag}.haxProperties.json`, import.meta.url)
+      .href;
+  }
 }
-
-customElements.define('site-analyzer', SiteAnalyzer);
+ 
+globalThis.customElements.define(mvpSearch.tag, mvpSearch);
