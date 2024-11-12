@@ -143,12 +143,12 @@ export class mvpItem extends DDDSuper(I18NMixin(LitElement)) {
   render() {
     return html`
       <div class="wrapper">
-        ${this.image ? html`<img src="${this.image}" alt="Page Image" />` : ""}
+        ${this.image ? html`<img src="https://haxtheweb.org/${this.image}" alt="Page Image" />` : ""}
         <h3>${this.title}</h3>
         <p><strong>Last Updated:</strong> ${this.lastUpdated}</p>
         <p>${this.description}</p>
-        <a href= @haxtheweb>${this.slug}</a>
-        <a @click="${() => this._handlePathClick()}">${this.path}</a>
+        <a href="https://haxtheweb.org/${this.slug}">Link to page</a>
+        <a href = ${this.path}></a>
         <p>${this.additional}</p>
       </div>
     `;

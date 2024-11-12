@@ -20,6 +20,15 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
     this.title = "";
     this.value = "";
     this.overview = {};
+    this.name ="";
+    this.theme ="";
+    this.logo = "";
+    this.hexcode = "";
+    this.description = "";
+    this.created = "";
+    this.updated = "";
+
+
   }
  
   // Lit reactive properties
@@ -30,6 +39,13 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       value: { type: String },
       items: { type: Array },
       overview: { type: Object },
+      name : {type: String},
+      logo: {type: String},
+      description: {type: String},
+      hexcode: {type: String},
+      updated: {type: String},
+      created: {type:String},
+        
     };
   }
  
@@ -95,7 +111,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
           <input
             type="text"
             id="site-url"
-            placeholder="https://hax.theweb.org/site.json"
+            placeholder="https://haxtheweb.org/site.json"
           />
           <button @click="${this.updateResults}">Analyze</button>
         </div>
@@ -107,7 +123,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
             (item, index) => html`
               <mvp-item
                 title=${item.title}
-                lastUpdated=${item.metadata.updated}
+                lastUpdated=${this.dateToString(item.metadata.updated)}
                 description=${item.description}
                 image=${item.metadata.images[0]}
                 slug=${item.slug}
@@ -120,7 +136,10 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       </div>
     `;
   }
- 
+  dateToString(timestamp){
+    const date = new Date(timestamp * 1000);
+    return date.toUTCString();
+   }
   /**
    * haxProperties integration via file reference
    */
