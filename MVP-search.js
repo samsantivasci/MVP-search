@@ -148,12 +148,11 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
               : ""
           }
         <div class="text-wrap">
-          <h2 id="name">name:</h2> ${this.name ? html`<div>${this.name}</div>` : ""}
-          <h2 id="description">description:</h2> ${this.description ? html`<div>${this.description}</div>` : ""}
-          <h2 id="theme">theme: <span id="theme"></h2> ${this.theme ? html`<div>${this.theme}</div>` : ""}
-          <h2 class="created">created: <span id="created"></span></h2> ${this.created ? html`<div>${this.dateToString(this.created)}</div>` : ""}
-          <h2 class="last-updated"> lastupdated: <span id="lastupdated"></span>
-          </h2>
+          <h2 id="name">Name:</h2> ${this.name ? html`<div>${this.name}</div>` : ""}
+          <h2 id="description">Description:</h2> ${this.description ? html`<div>${this.description}</div>` : ""}
+          <h2 id="theme">Theme: <span id="theme"></h2> ${this.theme ? html`<div>${this.theme}</div>` : ""}
+          <h2 class="created">Created: <span id="created"></span></h2> ${this.created ? html`<div>${this.dateToString(this.created)}</div>` : ""}
+          <h2 class="last-updated"> Last Updated: <span id="lastupdated"></span></h2>
           ${this.lastupdated ? html`<div>${this.dateToString(this.lastupdated)}</div>`: ""}
           <h2 class="hex-code">Hex Code: <span id="hexcode"></span></h2> ${this.hexCode ? html`<div>${this.hexCode}</div>` : ""}
         </div>
@@ -176,6 +175,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       </div>
     `;
   }
+
  
   /**
    * haxProperties integration via file reference
