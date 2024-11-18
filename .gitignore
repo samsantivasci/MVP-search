@@ -6,35 +6,7 @@
 .DS_Store
 
 ## npm
-
-
-
-
-/npm-debug.log
-
-## testing
-/coverage/
-
-## temp folders
-/.tmp/
-
-# build
-/_site/
-/dist/
-/out-tsc/
-/public/
-
-storybook-static
-custom-elements.json
-.vercel## editors
-/.idea
-/.vscode
-
-## system files
-.DS_Store
-
-## npm
-/node_modules/*
+/node_modules/
 /npm-debug.log
 
 ## testing
@@ -52,3 +24,4 @@ custom-elements.json
 storybook-static
 custom-elements.json
 .vercel
+ 
