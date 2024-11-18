@@ -13,15 +13,16 @@ export class mvpItem extends DDDSuper(I18NMixin(LitElement)) {
     return "mvp-item";
   }
  
+ 
   constructor() {
     super();
     this.title = "";
     this.lastUpdated = "";
+    this.created = "";
     this.description = "";
     this.image = "";
     this.slug = "";
     this.path = "";
-    this.additional = "";
   }
  
   // Lit reactive properties
@@ -132,7 +133,7 @@ export class mvpItem extends DDDSuper(I18NMixin(LitElement)) {
           }
  
           p {
-            font-size: 0.9rem;
+            
           }
         }
       `,
@@ -143,28 +144,16 @@ export class mvpItem extends DDDSuper(I18NMixin(LitElement)) {
   render() {
     return html`
       <div class="wrapper">
-        ${this.image ? html`<img src="https://haxtheweb.org/${this.image}" alt="Page Image" />` : ""}
+        ${this.image ? html` <img src="https://haxtheweb.org/${this.image}" alt="Page Image" />`
+          : ""}
         <h3>${this.title}</h3>
         <p><strong>Last Updated:</strong> ${this.lastUpdated}</p>
         <p>${this.description}</p>
-        <a href="https://haxtheweb.org/${this.slug}">Link to page</a>
-        <a href = ${this.path}></a>
-        <p>${this.additional}</p>
+        <a href="https://haxtheweb.org/${this.slug}">link to open content</a>
+        <a href="https://haxtheweb.org/$${this.path}">path to open content</a>
       </div>
     `;
   }
- 
-  // Button handlers for slug and path
-  _handleSlugClick() {
-    console.log("Slug button clicked");
-    // Implement your slug button behavior here
-  }
- 
-  _handlePathClick() {
-    console.log("Path button clicked");
-    // Implement your path button behavior here
-  }
- 
   /**
    * haxProperties integration via file reference
    */

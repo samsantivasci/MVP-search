@@ -20,15 +20,13 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
     this.title = "";
     this.value = "";
     this.overview = {};
-    this.name ="";
-    this.theme ="";
-    this.logo = "";
-    this.hexcode = "";
+    this.name = "";
     this.description = "";
+    this.logo = "";
+    this.theme = "";
     this.created = "";
-    this.updated = "";
-
-
+    this.lastupdated = "";
+    this.hexCode = "";
   }
  
   // Lit reactive properties
@@ -39,13 +37,13 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       value: { type: String },
       items: { type: Array },
       overview: { type: Object },
-      name : {type: String},
-      logo: {type: String},
-      description: {type: String},
-      hexcode: {type: String},
-      updated: {type: String},
-      created: {type:String},
-        
+      name: { type: String },
+      description: { type: String },
+      logo: { type: String },
+      theme: { type: String },
+      created: { type: String },
+      lastupdated: { type: String },
+      hexCode: { type: String },
     };
   }
  
@@ -64,8 +62,25 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
           margin: var(--ddd-spacing-2);
           padding: var(--ddd-spacing-4);
         }
-        h3 span {
-          font-size: var(--mvp-search-label-font-size, var(--ddd-font-size-s));
+        h2 {
+          font-size: var(--mvp-search-label-font-size, var(--ddd-font-size-xs));
+          margin: 0;
+        }
+ 
+        .overview-card {
+          display: flex;
+ 
+          background-color: var(--site-hex-code);
+          border: 1px;
+          padding: 15px;
+          flex: 1 1 calc(25% - 20px);
+          box-sizing: border-box;
+          cursor: pointer;
+          border: 1px solid #ddd;
+        }
+        #logo {
+          height: 200px;
+          width: 200px;
         }
       `,
     ];
@@ -93,6 +108,13 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       .then((d) => (d.ok ? d.json() : {}))
       .then((data) => {
         if (data) {
+          this.name = data.metadata.site.name;
+          this.description = data.description;
+          this.logo = data.metadata.site.logo;
+          this.theme = data.metadata.theme.name;
+          this.created = data.metadata.site.created;
+          this.lastupdated = data.metadata.site.updated;
+          this.hexCode = data.metadata.theme.variables.hexCode;
           this.items = data.items;
           this.loading = false;
         } else {
@@ -100,7 +122,10 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
         }
       });
   }
- 
+  dateToString(timeStamp) {
+    const date = new Date(timeStamp * 1000);
+    return date.toUTCString();
+  }
   // Lit render the HTML
   render() {
     return html`
@@ -111,23 +136,38 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
           <input
             type="text"
             id="site-url"
-            placeholder="https://haxtheweb.org/site.json"
+            placeholder="https://hax.theweb.org/site.json"
           />
           <button @click="${this.updateResults}">Analyze</button>
         </div>
- 
-        <div id="overview" class="overview"></div>
- 
+        <div class="overview-card" id="overview-card" style="--site-hex-code: ${
+          this.hexCode
+        };">
+        <h2 class="logo"></h2>
+          ${this.logo ? html`<img id="logo" src="https://haxtheweb.org/${this.logo}" />`
+              : ""
+          }
+        <div class="text-wrap">
+          <h2 id="name">name:</h2> ${this.name ? html`<div>${this.name}</div>` : ""}
+          <h2 id="description">description:</h2> ${this.description ? html`<div>${this.description}</div>` : ""}
+          <h2 id="theme">theme: <span id="theme"></h2> ${this.theme ? html`<div>${this.theme}</div>` : ""}
+          <h2 class="created">created: <span id="created"></span></h2> ${this.created ? html`<div>${this.dateToString(this.created)}</div>` : ""}
+          <h2 class="last-updated"> lastupdated: <span id="lastupdated"></span>
+          </h2>
+          ${this.lastupdated ? html`<div>${this.dateToString(this.lastupdated)}</div>`: ""}
+          <h2 class="hex-code">Hex Code: <span id="hexcode"></span></h2> ${this.hexCode ? html`<div>${this.hexCode}</div>` : ""}
+        </div>
+        </div>
         <div id="cards" class="cards">
           ${this.items.map(
-            (item, index) => html`
+            (item) => html`
               <mvp-item
                 title=${item.title}
                 lastUpdated=${this.dateToString(item.metadata.updated)}
                 description=${item.description}
                 image=${item.metadata.images[0]}
-                slug=${item.slug}
-                path=${item.location}
+                slug=https://haxtheweb.org/${item.slug}
+                path=https://haxtheweb.org/${item.location}
                 addtional=${item.metadata.published}
               ></mvp-item>
             `
@@ -136,10 +176,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       </div>
     `;
   }
-  dateToString(timestamp){
-    const date = new Date(timestamp * 1000);
-    return date.toUTCString();
-   }
+ 
   /**
    * haxProperties integration via file reference
    */
