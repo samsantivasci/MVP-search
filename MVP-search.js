@@ -25,7 +25,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
     this.logo = "";
     this.theme = "";
     this.created = "";
-    this.lastupdated = "";
+    this.lastUpdated = "";
     this.hexCode = "";
   }
  
@@ -42,7 +42,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       logo: { type: String },
       theme: { type: String },
       created: { type: String },
-      lastupdated: { type: String },
+      lastUpdated: { type: String },
       hexCode: { type: String },
     };
   }
@@ -113,7 +113,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
           this.logo = data.metadata.site.logo;
           this.theme = data.metadata.theme.name;
           this.created = data.metadata.site.created;
-          this.lastupdated = data.metadata.site.updated;
+          this.lastUpdated = data.metadata.site.updated;
           this.hexCode = data.metadata.theme.variables.hexCode;
           this.items = data.items;
           this.loading = false;
@@ -152,8 +152,7 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
           <h2 id="description">Description:</h2> ${this.description ? html`<div>${this.description}</div>` : ""}
           <h2 id="theme">Theme: <span id="theme"></h2> ${this.theme ? html`<div>${this.theme}</div>` : ""}
           <h2 class="created">Created: <span id="created"></span></h2> ${this.created ? html`<div>${this.dateToString(this.created)}</div>` : ""}
-          <h2 class="last-updated"> Last Updated: <span id="lastupdated"></span></h2>
-          ${this.lastupdated ? html`<div>${this.dateToString(this.lastupdated)}</div>`: ""}
+          <h2 class="last-updated"> Last Updated: <span id="lastupdated"></span></h2>${this.lastupdated ? html`<div>${this.dateToString(this.lastUpdated)}</div>`: ""}
           <h2 class="hex-code">Hex Code: <span id="hexcode"></span></h2> ${this.hexCode ? html`<div>${this.hexCode}</div>` : ""}
         </div>
         </div>
@@ -175,8 +174,6 @@ export class mvpSearch extends DDDSuper(I18NMixin(LitElement)) {
       </div>
     `;
   }
-
- 
   /**
    * haxProperties integration via file reference
    */

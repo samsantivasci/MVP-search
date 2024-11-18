@@ -89,7 +89,7 @@ export class mvpItem extends DDDSuper(I18NMixin(LitElement)) {
         /* Text block styling */
         p {
           font-size: var(--mvp-search-text-font-size, 1rem);
-          line-height: 1.6;
+          line-height: 2;
           margin: 8px 0;
         }
  
@@ -149,8 +149,8 @@ export class mvpItem extends DDDSuper(I18NMixin(LitElement)) {
         <h3>${this.title}</h3>
         <p><strong>Last Updated:</strong> ${this.lastUpdated}</p>
         <p>${this.description}</p>
-        <a href="https://haxtheweb.org/${this.slug}">link to open content</a>
-        <a href="https://haxtheweb.org/$${this.path}">path to open content</a>
+        <a href="https://haxtheweb.org/${this.slug}">link to source</a>
+        <a href="https://haxtheweb.org/$${this.path}">link to path</a>
       </div>
     `;
   }
